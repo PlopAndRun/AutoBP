@@ -25,7 +25,9 @@
     
     <target name="dist" depends="readInfoVersion">
         <property name="result.zip" value="${build.dir}/AutoBP_${version}.zip"/>
-    	<zip destfile="${result.zip}" basedir="${src.dir}"/>
+    	<zip destfile="${result.zip}">
+   	    	<zipfileset dir="${src.dir}" prefix="AutoBP_${version}"/>
+    	</zip>
     </target>
     
     <target name="install" depends="readInfoVersion">
