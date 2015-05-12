@@ -23,14 +23,32 @@
         </script>
     </target>
     
-    <target name="dist" depends="readInfoVersion">
+    <target name="dist-dir" depends="readInfoVersion">
+        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
+    	<mkdir dir="${result.dir}"/>
+    	<copy todir="${result.dir}">
+    	    <fileset dir="${src.dir}"/>
+    	</copy>
+    </target>
+    
+    <target name="install-dir" depends="readInfoVersion">
+        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
+        <delete includeemptydirs="true">
+        	<fileset dir="${factorio.mods.dir}" includes="**/AutoBP_*/**" />
+       	</delete>
+        <copy todir="${factorio.mods.dir}/AutoBP_${version}">
+            <fileset dir="${result.dir}"/>
+        </copy>
+    </target>
+    
+    <target name="dist-zip" depends="readInfoVersion">
         <property name="result.zip" value="${build.dir}/AutoBP_${version}.zip"/>
     	<zip destfile="${result.zip}">
    	    	<zipfileset dir="${src.dir}" prefix="AutoBP_${version}"/>
     	</zip>
     </target>
     
-    <target name="install" depends="readInfoVersion">
+    <target name="install-zip" depends="readInfoVersion">
         <property name="result.zip" value="${build.dir}/AutoBP_${version}.zip"/>
         <delete>
         	<fileset dir="${factorio.mods.dir}" includes="AutoBP_*.zip" />
@@ -38,5 +56,5 @@
         <copy todir="${factorio.mods.dir}" file="${result.zip}"/>
     </target>
     
-    <target name="all" depends="clean,dist,install"/>
+    <target name="all" depends="clean,dist-dir,install-dir"/>
 </project>
