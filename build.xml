@@ -1,4 +1,4 @@
-<project>
+<project default="all">
     <!-- pass -Dfactorio.mods.dir as a parameter:
     	 -Dfactorio.mods.dir="E:\Games\Factorio\mods" -->
     
@@ -23,23 +23,18 @@
         </script>
     </target>
     
-    <target name="build" depends="readInfoVersion">
-        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
-    	<mkdir dir="${result.dir}"/>
-    	<copy todir="${result.dir}">
-    	    <fileset dir="${src.dir}"/>
-    	</copy>
+    <target name="dist" depends="readInfoVersion">
+        <property name="result.zip" value="${build.dir}/AutoBP_${version}.zip"/>
+    	<zip destfile="${result.zip}" basedir="${src.dir}"/>
     </target>
     
-    <target name="deploy" depends="readInfoVersion">
-        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
-        <delete includeemptydirs="true">
-        	<fileset dir="${factorio.mods.dir}" includes="**/AutoBP_*/**" />
+    <target name="install" depends="readInfoVersion">
+        <property name="result.zip" value="${build.dir}/AutoBP_${version}.zip"/>
+        <delete>
+        	<fileset dir="${factorio.mods.dir}" includes="AutoBP_*.zip" />
        	</delete>
-        <copy todir="${factorio.mods.dir}/AutoBP_${version}">
-            <fileset dir="${result.dir}"/>
-        </copy>
+        <copy todir="${factorio.mods.dir}" file="${result.zip}"/>
     </target>
     
-    <target name="main" depends="clean, build, deploy"/>
+    <target name="all" depends="clean,dist,install"/>
 </project>
