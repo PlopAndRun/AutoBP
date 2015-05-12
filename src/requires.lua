@@ -1,3 +1,4 @@
 require "defines"
-require "classes/Production"
+require "classes/bean/Production"
+require "classes/util/Queue"
 require "test"

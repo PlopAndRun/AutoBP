@@ -1,29 +1,47 @@
 require "requires"
 
-function getAllRecepies()
+local function getAllRecepies()
   return game.player.force.recipes
 end
 
-function evaluate(recepies, production)
+local function evaluate(recepies, item)
   assert(recepies, "evalulate(recepies = nil)")
-  assert(production, "evaluate(production = nil)")
+  assert(item, "evaluate(item = nil)")
   
-  local recepie = recepies[production.item.name]
-  if recepie ~= nil then
-    for _, component in ipairs(recepie.ingredients) do
-      local component = Production.create(game.itemprototypes[component.name])
-      evaluate(recepies, component)
-      production:addComponent(component)
+  local queue = Queue.create()
+  local evaluated = {}
+  local result = Production.create(item)
+  
+  queue:put(result)
+  evaluated[item.name] = true
+
+  while not queue:isEmpty() do
+    local production = queue:pull()
+    local itemName = production.item.name
+    local recepie = recepies[itemName]
+    
+    if recepie then
+      for _, ingredient in ipairs(recepie.ingredients) do
+        local componentName = ingredient.name
+        local component = Production.create(game.itemprototypes[componentName])
+        production:addComponent(component)
+        
+        if not evaluated[componentName] then
+          queue:put(component)
+          evaluated[componentName] = true
+        end
+      end
     end
   end
+  
+  return result
 end 
 
 function developProduction(item)
   assert(item, "developProduction(nil)")
 
   local recepies = getAllRecepies()
-  local production = Production.create(item)
-  evaluate(recepies, production)
+  local production = evaluate(recepies, item)
   return production
 end
 
