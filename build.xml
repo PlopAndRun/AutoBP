@@ -1,0 +1,45 @@
+<project>
+    <!-- pass -Dfactorio.mods.dir as a parameter:
+    	 -Dfactorio.mods.dir="E:\Games\Factorio\mods" -->
+    
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+    <target name="readInfoVersion">
+        <script language="javascript">
+            var basedir = project.getProperty("basedir");
+            var srcDir = project.getProperty("src.dir");
+	        var file = new java.io.File(basedir + "/" + srcDir + "/info.json");
+	        var scanner = new java.util.Scanner(file).useDelimiter("\\Z");
+	        
+	        var json = scanner.next();
+	        var info = JSON.parse(json);
+	        project.setProperty("version", info.version);
+        </script>
+    </target>
+    
+    <target name="build" depends="readInfoVersion">
+        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
+    	<mkdir dir="${result.dir}"/>
+    	<copy todir="${result.dir}">
+    	    <fileset dir="${src.dir}"/>
+    	</copy>
+    </target>
+    
+    <target name="deploy" depends="readInfoVersion">
+        <property name="result.dir" value="${build.dir}/AutoBP_${version}"/>
+        <delete includeemptydirs="true">
+        	<fileset dir="${factorio.mods.dir}" includes="**/AutoBP_*/**" />
+       	</delete>
+        <copy todir="${factorio.mods.dir}/AutoBP_${version}">
+            <fileset dir="${result.dir}"/>
+        </copy>
+    </target>
+    
+    <target name="main" depends="clean, build, deploy"/>
+</project>
