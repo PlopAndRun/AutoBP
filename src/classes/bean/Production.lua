@@ -6,10 +6,9 @@ function Production.create(item)
   
   local production = {}
   setmetatable(production, Production)
-  production.components = {}
   production.item = item
-  production.quantity = 1
   production.basic = true
+  production.components = {}
   return production
 end
 

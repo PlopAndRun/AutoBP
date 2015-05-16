@@ -2,8 +2,8 @@ local function writeTest(name, data)
   game.makefile("AutoBP/tests/" .. name .. ".log", data)
 end
 
-local function testProduction()
-  local tests = {"electronic-circuit", "science-pack-2"}
+function testProduction()
+  local tests = {"electronic-circuit", "science-pack-1", "science-pack-2"}
 
   for _, test in pairs(tests) do
     local item = game.itemprototypes[test]
@@ -12,6 +12,9 @@ local function testProduction()
   end
 end
 
-function test()
-  testProduction()
+function testBuildFactory()
+  print("testing build factory")
+  local item = "science-pack-2"
+  local production = developProduction(game.itemprototypes[item])
+  buildFactory(production)
 end
