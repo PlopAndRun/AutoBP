@@ -20,14 +20,16 @@ local function evaluate(recipes, item)
     if recipe then
       thing.recipe = recipe
       for _, ingredient in ipairs(recipe.ingredients) do
-        local componentName = ingredient.name
-        local component = evaluated[componentName]
-        if not component then
-          component = Thing.create(componentName)
-          queue:put(component)
-          evaluated[componentName] = component 
+        if GameWrapper.isCrafting(recipe) then
+          local componentName = ingredient.name
+          local component = evaluated[componentName]
+          if not component then
+            component = Thing.create(componentName)
+            queue:put(component)
+            evaluated[componentName] = component 
+          end
+          thing:addComponent(component)
         end
-        thing:addComponent(component)
       end
     end
   end

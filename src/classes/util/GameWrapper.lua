@@ -27,3 +27,7 @@ end
 function GameWrapper.print(text)
   game.player.print(tostring(text))
 end
+
+function GameWrapper.isCrafting(recipe)
+  return recipe.category == "crafting"
+end
