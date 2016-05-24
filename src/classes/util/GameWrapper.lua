@@ -13,9 +13,9 @@ function GameWrapper.getAllRecipes()
 end
 
 function GameWrapper.getItemByName(name)
-  assert(name, "GameWrapper.getItemByName(nil)")
+  tassert(name, "GameWrapper.getItemByName(nil)")
   local result = game.item_prototypes[name]
-  assert(result, "no such item: " .. name)
+  tassert(result, "no such item: " .. name)
   return result
 end
 

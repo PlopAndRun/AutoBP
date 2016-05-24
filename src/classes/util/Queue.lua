@@ -25,7 +25,7 @@ function Queue:size()
 end
 
 function Queue:pull()  
-  assert(self.last >= self.first, "the queue is empty")
+  tassert(self.last >= self.first, "the queue is empty")
   self.first = self.first + 1
   return self[self.first - 1]
 end

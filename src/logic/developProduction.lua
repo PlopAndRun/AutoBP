@@ -1,28 +1,33 @@
 local function evaluate(recipes, item)
-  assert(recipes, "evalulate(recipes = nil)")
-  assert(item, "evaluate(item = nil)")
-  assert(item.name, "item name is nil")
+  tassert(recipes, "evalulate(recipes = nil)")
+  tassert(item, "evaluate(item = nil)")
+  tassert(item.name, "item name is nil")
   
   local queue = Queue.create()
   local evaluated = {}
-  local result = Production.create(item)
+  local result = Production.create()
+  local rootThing = Thing.create(item.name)
   
-  queue:put(result)
-  evaluated[item.name] = true
+  result:addOutput(rootThing)
+  queue:put(rootThing)
+  evaluated[item.name] = result
 
   while not queue:isEmpty() do
-    local production = queue:pull()
-    local itemName = production.item.name
+    local thing = queue:pull()
+    local itemName = thing.name
     local recipe = recipes[itemName]
     
     if recipe then
-      production.recipe = recipe
+      thing.recipe = recipe
       for _, ingredient in ipairs(recipe.ingredients) do
         local componentName = ingredient.name
-        local component = Production.create(GameWrapper.getItemByName(componentName))
-        production:addComponent(component)
-      
-        queue:put(component)
+        local component = evaluated[componentName]
+        if not component then
+          component = Thing.create(componentName)
+          queue:put(component)
+          evaluated[componentName] = component 
+        end
+        thing:addComponent(component)
       end
     end
   end
@@ -31,7 +36,7 @@ local function evaluate(recipes, item)
 end 
 
 function developProduction(item)
-  assert(item, "developProduction(nil)")
+  tassert(item, "developProduction(nil)")
 
   local recipes = GameWrapper.getAllRecipes()
   local production = evaluate(recipes, item)

@@ -1,43 +1,32 @@
 Production = {}
 Production.__index = Production
 
-function Production.create(item)
-  assert(item, "Production.create(nil)")
+function Production.create()
   
   local production = {}
   setmetatable(production, Production)
-  production.item = item
-  production.basic = true
-  production.components = {}
+  
+  production.things = {}
+  production.output = {}
   return production
 end
 
-function Production:addComponent(component)
-  assert(component, "Production:addComponent(nil)")
-  assert(getmetatable(component) == Production, "Production:addComponent(wrong metatable)")
+function Production:addComponent(compound, component)
+  tassert(compound, "Production:addComponent(thing = nil")
+  tassert(component, "Production:addComponent(component = nil)")
+  tassert(self.things[compound], "Production does not have " .. compound.name)
   
-  table.insert(self.components, component)
-  self.basic = false
+  compound.addComponent(component)
+  table.insert(self.things, component)
 end
 
-function Production:toString()
-  local function toString(production, depth, buffer)  
-    local row = {}
-    if depth > 0 then
-      table.insert(row, string.rep("  ", depth))
-    end
-    table.insert(row, production.item.name)
-    if not production.basic then 
-      table.insert(row, " =")
-    end
-      
-    table.insert(buffer, table.concat(row))
-    for _, production in ipairs(production.components) do
-      toString(production, depth + 1, buffer)
-    end
-  end
-  
-  local buffer = {}
-  toString(self, 0, buffer)
-  return table.concat(buffer, "\n")
+function Production:addOutput(thing)
+  tassert(thing, "Production:addOutput(nil)")
+  table.insert(self.things, thing)
+  self.output = thing
+end
+
+--TODO: implement or delete 
+function Production:toString() 
+  return "production:toString is not implemented"
 end
