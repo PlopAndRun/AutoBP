@@ -19,13 +19,10 @@ local function evaluate(recipes, item)
       production.recipe = recipe
       for _, ingredient in ipairs(recipe.ingredients) do
         local componentName = ingredient.name
-        local component = Production.create(game.itemprototypes[componentName])
+        local component = Production.create(GameWrapper.getItemByName(componentName))
         production:addComponent(component)
-        
-        if not evaluated[componentName] then
-          queue:put(component)
-          evaluated[componentName] = true
-        end
+      
+        queue:put(component)
       end
     end
   end
@@ -36,7 +33,7 @@ end
 function developProduction(item)
   assert(item, "developProduction(nil)")
 
-  local recipes = getAllRecipes()
+  local recipes = GameWrapper.getAllRecipes()
   local production = evaluate(recipes, item)
   return production
 end

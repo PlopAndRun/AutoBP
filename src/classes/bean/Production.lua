@@ -20,23 +20,23 @@ function Production:addComponent(component)
   self.basic = false
 end
 
-local function toString(production, depth, buffer)  
-  local row = {}
-  if depth > 0 then
-    table.insert(row, string.rep("  ", depth))
-  end
-  table.insert(row, production.item.name)
-  if not production.basic then 
-    table.insert(row, " =")
-  end
-    
-  table.insert(buffer, table.concat(row))
-  for _, production in ipairs(production.components) do
-    toString(production, depth + 1, buffer)
-  end
-end
-
 function Production:toString()
+  local function toString(production, depth, buffer)  
+    local row = {}
+    if depth > 0 then
+      table.insert(row, string.rep("  ", depth))
+    end
+    table.insert(row, production.item.name)
+    if not production.basic then 
+      table.insert(row, " =")
+    end
+      
+    table.insert(buffer, table.concat(row))
+    for _, production in ipairs(production.components) do
+      toString(production, depth + 1, buffer)
+    end
+  end
+  
   local buffer = {}
   toString(self, 0, buffer)
   return table.concat(buffer, "\n")

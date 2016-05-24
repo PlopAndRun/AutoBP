@@ -1,6 +1,6 @@
 require "requires"
 
-remote.addinterface("AutoBP", {
+remote.add_interface("AutoBP", {
   testProduction = testProduction,
   testBuildFactory = testBuildFactory
 })

@@ -20,7 +20,12 @@ function Queue:put(item)
   self[self.last] = item
 end
 
-function Queue:pull()
+function Queue:size()
+  return self.last - self.first + 1
+end
+
+function Queue:pull()  
+  assert(self.last >= self.first, "the queue is empty")
   self.first = self.first + 1
   return self[self.first - 1]
 end
